@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import utils
+from keep_alive import keep_alive
 
 load_dotenv()
 
@@ -60,5 +61,5 @@ async def on_message(ctx):
         await ctx.channel.send(response)
         return
 
-
+keep_alive()
 client.run(os.environ["BOT_TOKEN"])
