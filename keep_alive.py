@@ -11,7 +11,7 @@ def home():
 
 
 def run():
-    app.run(host='ordo-bot.herokuapp.com', port=8080)
+    app.run(host='ordo-bot.herokuapp.com', port=443)
 
 
 def keep_alive():
