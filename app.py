@@ -1,4 +1,3 @@
-from http import client
 import os
 import logging
 import discord
@@ -21,9 +20,9 @@ async def on_ready():
     logger.info(f"logged in as {client.user}")
 
 @client.event
-async def on_message(message):
-    content = message.content
-    if message.author == client.user:
+async def on_message(ctx):
+    content = ctx.content
+    if ctx.author == client.user:
         logger.info("message sent by bot itself, ignoring...")
         return
 
@@ -34,19 +33,31 @@ async def on_message(message):
             modifier = int(fields[2])
             dt = int(fields[3])
         except IndexError as e:
-            logger.warning(f"invalid fields for {message.author} message threw the exception bellow... \n {e}")
-            await message.channel.send("Campos inválidos!")
+            logger.warning(f"invalid fields for {ctx.author} message threw the exception bellow... \n {e}")
+            await ctx.channel.send("Campos inválidos!")
             return
 
-        response = utils.dice_roll(dice_pool,modifier,dt)
-        logger.info(f"rolling dice for {message.author}...")
-        await message.channel.send(response)
+        dice_info = utils.dice_roll(dice_pool,modifier,dt)
+
+        embed_image = discord.Embed(
+            title = f'{ctx.author} rolou...',
+            color=dice_info[3],
+        )
+        embed_image.add_field(name="**Dados**", value=dice_info[0], inline=True)
+        embed_image.add_field(name="**Modificador**", value=modifier, inline=True)
+        embed_image.add_field(name="**Dificuldade**", value=dt, inline=True)
+        embed_image.add_field(name="**Rolagem final:**", value=dice_info[5]+modifier)
+        embed_image.add_field(name="**Resultado:**", value=dice_info[4])
+        embed_image.set_thumbnail(url=dice_info[2])
+
+        logger.info(f"rolling dice for {ctx.author}...")
+        await ctx.channel.send(embed=embed_image)
         return
 
     elif content.startswith('ordo!ping'):
-        logger.info(f'running ping command by {message.author}...')
+        logger.info(f'running ping command by {ctx.author}...')
         response = f'Pong! {round(client.latency * 1000)}ms'
-        await message.channel.send(response)
+        await ctx.channel.send(response)
         return
 
 
