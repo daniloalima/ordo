@@ -32,8 +32,8 @@ async def on_message(ctx):
             dice_pool = int(fields[1])
             modifier = int(fields[2])
             dt = int(fields[3])
-        except IndexError as e:
-            logger.warning(f"invalid fields for {ctx.author} message threw the exception bellow... \n {e}")
+        except IndexError as error:
+            logger.warning(f"invalid fields for {ctx.author} message threw the exception bellow...\n {error}")
             await ctx.channel.send("Campos inválidos!")
             return
 
@@ -55,9 +55,25 @@ async def on_message(ctx):
         return
 
     elif content.startswith('ordo!ping'):
+        embed_image = discord.Embed(
+            title = 'Ping...',
+            color=0x492ea4,
+        )
         logger.info(f'running ping command by {ctx.author}...')
-        response = f'Pong! {round(client.latency * 1000)}ms'
-        await ctx.channel.send(response)
+        embed_image.add_field(name="**Pong!**", value=f'{round(client.latency * 1000)}ms')
+        await ctx.channel.send(embed=embed_image)
         return
 
-client.run(os.environ["BOT_TOKEN"])
+    elif content.startswith('!ro'):
+        fields=content.split(' ')
+        dice_info = utils.other_dice(fields[1])
+        embed_image = discord.Embed(
+            color=0x492ea4
+        )
+        embed_image.add_field(name="**Dados**", value=dice_info[0], inline=True)
+        embed_image.add_field(name="**Total**", value=dice_info[3], inline=True)
+        await ctx.channel.send(embed=embed_image)
+        return
+
+if __name__ == "__main__":
+    client.run(os.environ["BOT_TOKEN"])

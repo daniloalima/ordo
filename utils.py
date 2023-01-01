@@ -37,3 +37,10 @@ def dice_roll(dice_pool, modifier, dt):
     #reply = f'**Dice -** {dice_rolled} | **You rolled -** {final_roll} vs {dt} | **[{test_result}]**'
 
     return dice_rolled,used_roll,test_result,color,result_text,used_roll
+
+def other_dice(dice_string):
+    values = dice_string.split('d')
+    dice_pool = int(values[0])
+    dice_number = int(values[1])+1
+    dice_rolled = random.sample(range(1,dice_number), dice_pool)
+    return dice_rolled,dice_pool,dice_number,sum(dice_rolled)
