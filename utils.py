@@ -1,12 +1,7 @@
 import random
 
 
-def dice_roll(dice_pool, modifier, dt):
-
-    success = 'https://gcdnb.pbrd.co/images/aPlfABvAX3kP.png'
-    fail = 'https://gcdnb.pbrd.co/images/yevrCWBNRc0c.png'
-    critical = 'https://gcdnb.pbrd.co/images/Ht05rykRt9Ay.png'
-    disaster = 'https://gcdnb.pbrd.co/images/sryNUnTV6AKc.png'
+def dice_roll(dice_pool, modifier, dt=None):
 
     if dice_pool != 0:
         dice_rolled = random.sample(range(1, 21), dice_pool)
@@ -16,31 +11,31 @@ def dice_roll(dice_pool, modifier, dt):
         used_roll = min(dice_rolled)
 
     final_roll = used_roll + modifier
+    dice_rolled.sort()
 
+    if dt is not None:
+        dt_result = check_dt(dt, used_roll, final_roll)
+        return dice_rolled, final_roll, dt_result[0], dt_result[1]
+
+    return dice_rolled, final_roll
+
+def check_dt(dt, used_roll, final_roll):
+    dt_check_result = []
     if final_roll >= dt and used_roll == 20:
-        test_result = critical
-        color = 0x492ea4
-        result_text = 'Sucesso Crítico!'
+        dt_check_result.append(0x492ea4)
+        dt_check_result.append('Sucesso Crítico!')
     elif final_roll >= dt:
-        test_result = success
-        color = 0xd1a533
-        result_text = 'Sucesso.'
+        dt_check_result.append(0xd1a533)
+        dt_check_result.append('Sucesso.')
     elif final_roll < dt and used_roll == 1:
-        test_result = disaster
-        color = 0x000000
-        result_text = 'Falha Crítica!'
+        dt_check_result.append(0x000000)
+        dt_check_result.append('Falha Crítica!')
     else:
-        test_result = fail
-        color = 0x981111
-        result_text = 'Falha.'
+        dt_check_result.append(0x981111)
+        dt_check_result.append('Falha.')
 
-    #reply = f'**Dice -** {dice_rolled} | **You rolled -** {final_roll} vs {dt} | **[{test_result}]**'
+    return dt_check_result
 
-    return dice_rolled,used_roll,test_result,color,result_text,used_roll
-
-def other_dice(dice_string):
-    values = dice_string.split('d')
-    dice_pool = int(values[0])
-    dice_number = int(values[1])+1
-    dice_rolled = random.sample(range(1,dice_number), dice_pool)
-    return dice_rolled,dice_pool,dice_number,sum(dice_rolled)
+if __name__ == '__main__':
+    result = dice_roll(5, 10, 15)
+    print(result)
