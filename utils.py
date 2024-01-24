@@ -1,23 +1,29 @@
 import random
 
 
-def dice_roll(dice_pool, modifier, dt=None):
+def dice_roll(dice_pool, difficulty=None):
+    difficulty = 6 if difficulty is None else difficulty
+    dice_rolled = []
+    sucess = 0
 
-    if dice_pool != 0:
-        dice_rolled = random.sample(range(1, 21), dice_pool)
-        used_roll = max(dice_rolled)
-    else:
-        dice_rolled = random.sample(range(1, 21), 2)
-        used_roll = min(dice_rolled)
+    for n in range(0, dice_pool):
+        dice_rolled.append(random.randint(1, 10))
 
-    final_roll = used_roll + modifier
-    dice_rolled.sort()
+    dice_rolled.sort(reverse=True)
 
-    if dt is not None:
-        dt_result = check_dt(dt, used_roll, final_roll)
-        return dice_rolled, final_roll, dt_result[0], dt_result[1]
+    for i in range(len(dice_rolled)):
+        if dice_rolled[i] < difficulty:
+            dice_rolled[i] = f'~~{dice_rolled[i]}~~'
+        elif dice_rolled[i] == 10:
+            dice_rolled[i] = f'**{dice_rolled[i]}**'
+            sucess += 1
+        elif dice_rolled[i] == 1:
+            dice_rolled[i] = f'**~~{dice_rolled[i]}~~**'
+        else:
+            dice_rolled[i] = f'{dice_rolled[i]}'
+            sucess += 1
 
-    return dice_rolled, final_roll
+    return dice_rolled, sucess
 
 def check_dt(dt, used_roll, final_roll):
     dt_check_result = []
@@ -37,5 +43,5 @@ def check_dt(dt, used_roll, final_roll):
     return dt_check_result
 
 if __name__ == '__main__':
-    result = dice_roll(5, 10, 15)
+    result = dice_roll(3, 9)
     print(result)
