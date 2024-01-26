@@ -25,23 +25,6 @@ def dice_roll(dice_pool, difficulty=None):
 
     return dice_rolled, sucess
 
-def check_dt(dt, used_roll, final_roll):
-    dt_check_result = []
-    if final_roll >= dt and used_roll == 20:
-        dt_check_result.append(0x492ea4)
-        dt_check_result.append('Sucesso Crítico!')
-    elif final_roll >= dt:
-        dt_check_result.append(0xd1a533)
-        dt_check_result.append('Sucesso.')
-    elif final_roll < dt and used_roll == 1:
-        dt_check_result.append(0x000000)
-        dt_check_result.append('Falha Crítica!')
-    else:
-        dt_check_result.append(0x981111)
-        dt_check_result.append('Falha.')
-
-    return dt_check_result
-
 if __name__ == '__main__':
     result = dice_roll(3, 9)
     print(result)
